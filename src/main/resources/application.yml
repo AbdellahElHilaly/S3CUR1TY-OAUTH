@@ -1,0 +1,19 @@
+spring:
+
+  security:
+    oauth2:
+      resource-server:
+        opaque-token:
+          introspection-uri: https://www.googleapis.com
+          client-id: "945687517750-88ri2jmt7i59fdh3hv1acug28jau000o.apps.googleusercontent.com"
+          client-secret: "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"
+
+  datasource:
+    url: "jdbc:mysql://localhost:3306/S3CUIR1TY?createDatabaseIfNotExist=true"
+    username: "root"
+    password: ""
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+
