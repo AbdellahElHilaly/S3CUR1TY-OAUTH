@@ -3,6 +3,7 @@ package com.youcode.s3cur1ty.app.core.database.model.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.Collection;
@@ -15,6 +16,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@ToString
 public class Role {
 
     @Id
@@ -24,20 +26,23 @@ public class Role {
     private String name;
     @JsonIgnore
     @ManyToMany(mappedBy = "roles")
+    @ToString.Exclude
     private Collection<User> users;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "roles_privileges",
             joinColumns = @JoinColumn(
                     name = "role_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(
                     name = "privilege_id", referencedColumnName = "id"))
+    @ToString.Exclude
     private Collection<Privilege> privileges;
 
 
-    public List<SimpleGrantedAuthority> getAuthorities(){
-        List<SimpleGrantedAuthority> authorities = getPrivileges()
+    @JsonIgnore
+    public List<GrantedAuthority> getAuthorities(){
+        List<GrantedAuthority> authorities = getPrivileges()
                 .stream()
                 .map(privilege -> new SimpleGrantedAuthority(privilege.getName()))
                 .collect(Collectors.toList());

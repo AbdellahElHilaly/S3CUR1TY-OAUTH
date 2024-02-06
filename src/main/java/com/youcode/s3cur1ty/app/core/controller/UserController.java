@@ -3,7 +3,6 @@ package com.youcode.s3cur1ty.app.core.controller;
 import com.youcode.s3cur1ty.app.core.database.model.entity.User;
 import com.youcode.s3cur1ty.app.core.database.model.wrapper.UserDetail;
 import com.youcode.s3cur1ty.app.core.service.UserService;
-import com.youcode.s3cur1ty.security.common.principal.Principal;
 import com.youcode.s3cur1ty.security.provider.google.common.data.dto.UserInfo;
 import com.youcode.s3cur1ty.security.provider.google.core.service.OAuth2GoogleService;
 import com.youcode.s3cur1ty.utils.Const.AppEndPoints;
@@ -38,21 +37,18 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
-    @PreAuthorize(value = "(hasRole('SUPER_ADMIN')) and hasAuthority('CAN_ADD')")
-    @GetMapping("/test/super-admin")
-    public ResponseEntity<List<String>> testAdmin(@AuthenticationPrincipal OAuth2AuthenticatedPrincipal principal) {
+//    @PreAuthorize(value = "(hasRole('SUPER_ADMIN')) and hasAuthority('CAN_EDIT')")
+    @GetMapping("/authorities")
+    public ResponseEntity<List<String>> getAuthorities(@AuthenticationPrincipal OAuth2AuthenticatedPrincipal principal) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         authentication.getAuthorities().forEach(authority -> System.out.println("Authority: " + authority.getAuthority()));
-       return new ResponseEntity<>(authentication.getAuthorities().stream().map(authority -> authority.getAuthority()).toList(), HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK).body(authentication.getAuthorities().stream().map(authority -> authority.getAuthority()).toList());
     }
 
-    @GetMapping("/me")
-    public ResponseEntity<Principal> getMe(@AuthenticationPrincipal OAuth2AuthenticatedPrincipal principal) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication.getPrincipal() instanceof Principal) {
-            return ResponseEntity.ok( (Principal) authentication.getPrincipal());
-        }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    @GetMapping("/list")
+    @PreAuthorize(value = "(hasRole('SUPER_ADMIN')) and hasAuthority('CAN_SHOW')")
+    public ResponseEntity<List<User>> list() {
+        return ResponseEntity.ok(userService.findAll());
     }
 
 

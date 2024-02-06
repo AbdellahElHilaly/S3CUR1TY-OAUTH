@@ -31,19 +31,16 @@ public class AuthController {
 
     @GetMapping("/auth/callback")
     public ResponseEntity<TokenDto> callback(@RequestParam("code") String code) throws URISyntaxException {
-
         String token = oAuth2GoogleService.generateToken(code);
         if (token == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-
         UserInfo userInfo = oAuth2GoogleService.getUserInfo(token);
-
         userService.save(User.builder()
                 .sub(userInfo.sub())
+                .email(userInfo.email())
                 .userDetail(UserDetail.fromUserInfo(userInfo))
                 .build());
-
         return ResponseEntity.ok(new TokenDto(token));
     }
 

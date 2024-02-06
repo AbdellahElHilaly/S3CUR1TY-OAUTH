@@ -12,23 +12,25 @@ import java.util.Collection;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@ToString
 public class User {
     @Id
     private String sub;
+
+    private String email;
 
     @Transient
     private UserDetail userDetail;
 
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "users_roles",
             joinColumns = @JoinColumn(
                     name = "user_id", referencedColumnName = "sub"),
             inverseJoinColumns = @JoinColumn(
                     name = "role_id", referencedColumnName = "id"))
+    @ToString.Exclude
     private Collection<Role> roles;
-
-
 
 }

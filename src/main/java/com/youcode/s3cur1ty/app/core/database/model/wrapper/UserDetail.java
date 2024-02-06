@@ -15,7 +15,6 @@ public class UserDetail {
     String given_name;
     String family_name;
     String picture;
-    String email;
     boolean email_verified;
     String locale;
 
@@ -25,7 +24,6 @@ public class UserDetail {
                 .given_name(userInfo.given_name())
                 .family_name(userInfo.family_name())
                 .picture(userInfo.picture())
-                .email(userInfo.email())
                 .email_verified(userInfo.email_verified())
                 .locale(userInfo.locale())
                 .build();

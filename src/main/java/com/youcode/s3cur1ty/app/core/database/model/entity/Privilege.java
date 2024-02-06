@@ -13,6 +13,7 @@ import java.util.Collection;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@ToString
 public class Privilege {
 
     @Id
@@ -23,5 +24,6 @@ public class Privilege {
 
     @JsonIgnore
     @ManyToMany(mappedBy = "privileges")
+    @ToString.Exclude
     private Collection<Role> roles;
 }
